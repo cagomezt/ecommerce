@@ -2,38 +2,70 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .products import products
 
+from .models import Product
+from .products import products
+from .serializers import ProductSerializer
 
 # Create your views here.
 
 @api_view(['GET'])
 def getRoutes(request):
+    """
+    API view to retrieve a list of available API routes.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        Response: A list of API route paths.
+    """
     routes = [
-        '/api/products/',
-        '/api/products/create/',
-        '/api/products/upload/',
-        '/api/products/<id>/reviews/',
+        '/api/products/',  # Endpoint to retrieve all products
+        '/api/products/create/',  # Endpoint to create a new product
+        '/api/products/upload/',  # Endpoint to upload product data
+        '/api/products/<id>/reviews/',  # Endpoint to retrieve reviews for a specific product
 
-        '/api/products/top/',
-        '/api/products/<id>/',
+        '/api/products/top/',  # Endpoint to retrieve top-rated products
+        '/api/products/<id>/',  # Endpoint to retrieve a specific product by ID
 
-        '/api/products/delete/<id>/',
-        '/api/products/<update>/<id>/',
+        '/api/products/delete/<id>/',  # Endpoint to delete a specific product by ID
+        '/api/products/<update>/<id>/',  # Endpoint to update a specific product by ID
     ]
     return Response(routes)
 
 
 @api_view(['GET'])
 def getProducts(request):
-    return Response(products)
+    """
+    API view to retrieve all products.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        Response: Serialized data of all products.
+    """
+    products = Product.objects.all()  # Query all products from the database
+    serializer = ProductSerializer(products, many=True)  # Serialize the product data
+    return Response(serializer.data)  # Return the serialized data as a response
+
 
 @api_view(['GET'])
 def getProduct(request, pk):
-    product = None
-    for i in products:
-        if i['_id'] == pk:
-            product = i
-            break
-    return Response(product) if product else JsonResponse(
-        {'error': 'Product not found'}, status=404)
+    """
+    API view to retrieve a specific product by its primary key.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        pk (str): The primary key of the product to retrieve.
+
+    Returns:
+        Response: Serialized data of the product if found.
+        JsonResponse: Error message with status 404 if the product is not found.
+    """
+    product = Product.objects.get(pk=pk)  # Query the product by primary key
+    serializer = ProductSerializer(product)  # Serialize the product data
+    data = serializer.data  # Extract serialized data
+    return Response(data) if data else JsonResponse(
+        {'error': 'Product not found'}, status=404)  # Return data or error response
