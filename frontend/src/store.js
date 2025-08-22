@@ -9,7 +9,28 @@
  * so no additional middleware configuration is necessary unless custom middleware is required.
  */
 
-import { configureStore } from '@reduxjs/toolkit'
+import {
+    combineReducers,
+    configureStore
+} from '@reduxjs/toolkit'
+import {productListReducer, productDetailsReducer} from './reducers/productReducers' // Import your product slice reducers here
+import {cartReducer} from './reducers/cartReducers'
+
+
+const rootReducer = combineReducers({
+    productList: productListReducer, // Add your slice reducers to the combined reducer
+    productDetails: productDetailsReducer, // Add your slice reducers to the combined reducer
+    cart: cartReducer, // Add the cart reducer to manage cart state
+    // Add other reducers as needed
+});
+
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+    ? JSON.parse(localStorage.getItem('cartItems'))
+    : [];
+
+const initialState = {
+    cart: {cartItems: cartItemsFromStorage}
+}; // Initialize the state with cart items from localStorage
 
 /**
  * Creates and configures the Redux store.
@@ -17,8 +38,8 @@ import { configureStore } from '@reduxjs/toolkit'
  * @type {import('@reduxjs/toolkit').EnhancedStore} The configured Redux store.
  */
 const store = configureStore({
-    reducer: {}, // Add your slice reducers here
-    preloadedState: {}, // Optionally provide an initial state
-})
+    reducer: rootReducer, // Add your slice reducers here
+    preloadedState: initialState,
+});
 
 export default store

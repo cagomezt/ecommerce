@@ -1,7 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import {Row, Col} from 'react-bootstrap'
 import Product from "../components/Product";
-import axios from 'axios'
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import {useDispatch, useSelector} from 'react-redux'
+import {listProducts} from '../actions/productActions'
+
 
 /**
  * HomeScreen component displays the homepage with a list of the latest products.
@@ -12,33 +16,30 @@ import axios from 'axios'
  */
 function HomeScreen() {
     // State to store the list of products
-    const [products, setProducts] = useState([])
+    const dispatch = useDispatch()
+    const productList = useSelector(state => state.productList) // Access the product list from the Redux store
+    const {loading, error, products} = productList // Destructure loading, error,
 
     useEffect(() => {
-        /**
-         * Fetches the list of products from the backend API.
-         * This function is called when the component mounts.
-         */
-        async function fetchProducts() {
-            const {data} = await axios.get('/api/products') // API call to fetch products
-            setProducts(data) // Update the state with the fetched products
-        }
-
-        fetchProducts() // Call the fetchProducts function
+        dispatch(listProducts())
 
         // Optional cleanup function can be returned here if needed
-    }, []); // Dependency array ensures this effect runs only once on mount
+    }, [dispatch]); // Dependency array ensures this effect runs only once on mount
 
     return (
         <div>
-            <h1>Latest Products</h1>
-            <Row>
-                {products.map((product) => (
-                    <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                        <Product product={product}/> {/* Render each product using the Product component */}
-                    </Col>
-                ))}
-            </Row>
+            <h1>Latest Products </h1>
+            {loading ? <Loader />
+                : error
+                    ? <Message variant='danger'>{error}</Message>
+                    : <Row>
+                        {products.map((product) => (
+                            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                                <Product product={product}/> {/* Render each product using the Product component */}
+                            </Col>
+                        ))}
+                    </Row>}
+
         </div>
     )
 }
