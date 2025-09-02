@@ -4,10 +4,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Product
-from .products import products
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, UserSerializer
+
 
 # Create your views here.
+
 
 @api_view(['GET'])
 def getRoutes(request):
@@ -24,15 +25,34 @@ def getRoutes(request):
         '/api/products/',  # Endpoint to retrieve all products
         '/api/products/create/',  # Endpoint to create a new product
         '/api/products/upload/',  # Endpoint to upload product data
-        '/api/products/<id>/reviews/',  # Endpoint to retrieve reviews for a specific product
+        '/api/products/<id>/reviews/',
+        # Endpoint to retrieve reviews for a specific product
 
         '/api/products/top/',  # Endpoint to retrieve top-rated products
         '/api/products/<id>/',  # Endpoint to retrieve a specific product by ID
 
-        '/api/products/delete/<id>/',  # Endpoint to delete a specific product by ID
-        '/api/products/<update>/<id>/',  # Endpoint to update a specific product by ID
+        '/api/products/delete/<id>/',
+        # Endpoint to delete a specific product by ID
+        '/api/products/<update>/<id>/',
+        # Endpoint to update a specific product by ID
     ]
     return Response(routes)
+
+
+@api_view(['GET'])
+def getUserProfile(request):
+    """
+    API view to retrieve a user.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        Response: Serialized data of all products.
+    """
+    user = request.user  # Get the authenticated user
+    serializer = UserSerializer(user, many=False)  # Serialize the user data
+    return Response(serializer.data)  # Return the serialized data as a response
 
 
 @api_view(['GET'])
@@ -47,7 +67,8 @@ def getProducts(request):
         Response: Serialized data of all products.
     """
     products = Product.objects.all()  # Query all products from the database
-    serializer = ProductSerializer(products, many=True)  # Serialize the product data
+    serializer = ProductSerializer(products,
+                                   many=True)  # Serialize the product data
     return Response(serializer.data)  # Return the serialized data as a response
 
 
@@ -68,4 +89,5 @@ def getProduct(request, pk):
     serializer = ProductSerializer(product)  # Serialize the product data
     data = serializer.data  # Extract serialized data
     return Response(data) if data else JsonResponse(
-        {'error': 'Product not found'}, status=404)  # Return data or error response
+        {'error': 'Product not found'},
+        status=404)  # Return data or error response

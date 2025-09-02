@@ -1,9 +1,4 @@
-import {CART_ADD_ITEM} from "../constants/cartConstants";
-
-// In your cart reducer file
-const initialState = {
-    cartItems: JSON.parse(localStorage.getItem('cartItems')) || []
-};
+import {CART_ADD_ITEM, CART_REMOVE_ITEM} from "../constants/cartConstants";
 
 export const cartReducer = (state = {cartItems:[]}, action) => {
     switch (action.type) {
@@ -26,6 +21,11 @@ export const cartReducer = (state = {cartItems:[]}, action) => {
                     cartItems: [...state.cartItems, item],
                 };
             }
+        case CART_REMOVE_ITEM:
+            return {
+                ...state,
+                cartItems: state.cartItems.filter(x => x.product !== action.payload)
+            };
         // other cases...
         default:
             return state;
