@@ -5,13 +5,13 @@ from rest_framework.permissions import IsAdminUser,IsAuthenticated
 from rest_framework.response import Response
 
 from django.contrib.auth.models import User
-from .models import Product
-from .serializers import ProductSerializer, UserSerializer, UserSerializerWithToken
+from base.models import Product
+from base.serializers import (ProductSerializer, UserSerializer,
+                           UserSerializerWithToken)
 
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 
-# Create your views here.
 
 @api_view(['POST'])
 def registerUser(request):
@@ -54,40 +54,3 @@ def getUsers(request):
     users = User.objects.all()  # Query all users from the database
     serializer = UserSerializer(users, many=True)  # Serialize the users data
     return Response(serializer.data)  # Return the serialized data as a response
-
-
-@api_view(['GET'])
-def getProducts(request):
-    """
-    API view to retrieve all products.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-
-    Returns:
-        Response: Serialized data of all products.
-    """
-    products = Product.objects.all()  # Query all products from the database
-    serializer = ProductSerializer(products,
-                                   many=True)  # Serialize the product data
-    return Response(serializer.data)  # Return the serialized data as a response
-
-@api_view(['GET'])
-def getProduct(request, pk):
-    """
-    API view to retrieve a specific product by its primary key.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-        pk (str): The primary key of the product to retrieve.
-
-    Returns:
-        Response: Serialized data of the product if found.
-        JsonResponse: Error message with status 404 if the product is not found.
-    """
-    product = Product.objects.get(pk=pk)  # Query the product by primary key
-    serializer = ProductSerializer(product)  # Serialize the product data
-    data = serializer.data  # Extract serialized data
-    return Response(data) if data else JsonResponse(
-        {'error': 'Product not found'},
-        status=404)  # Return data or error response
