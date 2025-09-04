@@ -19,6 +19,9 @@ urlpatterns = [
     # Route for retrieving a user profile
     path('users/profile/', views.getUserProfile, name='user-profile'),
 
+    # Route for retrieving all user profile for admin
+    path('users/', views.getUsers, name='users'),
+
     # Route for retrieving all products
     path('products/', views.getProducts, name='products'),
 

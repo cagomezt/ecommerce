@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAdminUser,IsAuthenticated
 from rest_framework.response import Response
 
+from django.contrib.auth.models import User
 from .models import Product
 from .serializers import ProductSerializer, UserSerializer
 
@@ -40,6 +42,7 @@ def getRoutes(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getUserProfile(request):
     """
     API view to retrieve a user.
@@ -52,6 +55,13 @@ def getUserProfile(request):
     """
     user = request.user  # Get the authenticated user
     serializer = UserSerializer(user, many=False)  # Serialize the user data
+    return Response(serializer.data)  # Return the serialized data as a response
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUsers(request):
+    users = User.objects.all()  # Query all users from the database
+    serializer = UserSerializer(users, many=True)  # Serialize the users data
     return Response(serializer.data)  # Return the serialized data as a response
 
 
@@ -70,7 +80,6 @@ def getProducts(request):
     serializer = ProductSerializer(products,
                                    many=True)  # Serialize the product data
     return Response(serializer.data)  # Return the serialized data as a response
-
 
 @api_view(['GET'])
 def getProduct(request, pk):

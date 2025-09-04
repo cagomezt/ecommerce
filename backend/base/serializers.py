@@ -27,6 +27,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         serializer = UserSerializerWithToken(self.user).data
 
+        # Push the custom user data into the token response
         for k, v in serializer.items():
             data[k] = v
 

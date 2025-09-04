@@ -42,7 +42,7 @@ function ProductScreen({history}) {
                     ? <Message variant='danger'>{error}</Message>
                     : product ? (<Row>
                         <Col md={6}>
-                            <Image src={product.image} alt={product.name} fluid/>
+                            <Image src={product.image} alt={product.name} fluid rounded/>
                         </Col>
 
                         <Col md={3}>
