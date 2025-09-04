@@ -6,39 +6,30 @@ from rest_framework.response import Response
 
 from django.contrib.auth.models import User
 from .models import Product
-from .serializers import ProductSerializer, UserSerializer
+from .serializers import ProductSerializer, UserSerializer, UserSerializerWithToken
 
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
 
 # Create your views here.
 
+@api_view(['POST'])
+def registerUser(request):
+    data = request.data
 
-@api_view(['GET'])
-def getRoutes(request):
-    """
-    API view to retrieve a list of available API routes.
+    try:
+        user = User.objects.create_user(
+            first_name=data['name'],
+            username=data['email'],
+            email=data['email'],
+            password=make_password(data['password'])
+        )
 
-    Args:
-        request (HttpRequest): The HTTP request object.
-
-    Returns:
-        Response: A list of API route paths.
-    """
-    routes = [
-        '/api/products/',  # Endpoint to retrieve all products
-        '/api/products/create/',  # Endpoint to create a new product
-        '/api/products/upload/',  # Endpoint to upload product data
-        '/api/products/<id>/reviews/',
-        # Endpoint to retrieve reviews for a specific product
-
-        '/api/products/top/',  # Endpoint to retrieve top-rated products
-        '/api/products/<id>/',  # Endpoint to retrieve a specific product by ID
-
-        '/api/products/delete/<id>/',
-        # Endpoint to delete a specific product by ID
-        '/api/products/<update>/<id>/',
-        # Endpoint to update a specific product by ID
-    ]
-    return Response(routes)
+        serializer = UserSerializerWithToken(user, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'User with this email already exists'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

@@ -13,8 +13,8 @@ urlpatterns = [
     path('users/login/', TokenObtainPairView.as_view(),
          name='token_obtain_pair'),
 
-    # Route for retrieving available API routes
-    path('', views.getRoutes, name='routes'),
+    # Route for user registration
+    path('users/register/', views.registerUser, name='register'),
 
     # Route for retrieving a user profile
     path('users/profile/', views.getUserProfile, name='user-profile'),
