@@ -15,21 +15,27 @@ import {
 } from '@reduxjs/toolkit'
 import {productListReducer, productDetailsReducer} from './reducers/productReducers' // Import your product slice reducers here
 import {cartReducer} from './reducers/cartReducers'
+import {userLoginReducer} from './reducers/userReducers'
 
 
 const rootReducer = combineReducers({
     productList: productListReducer, // Add your slice reducers to the combined reducer
     productDetails: productDetailsReducer, // Add your slice reducers to the combined reducer
     cart: cartReducer, // Add the cart reducer to manage cart state
-    // Add other reducers as needed
+    userLogin: userLoginReducer,
 });
 
 const cartItemsFromStorage = localStorage.getItem('cartItems')
     ? JSON.parse(localStorage.getItem('cartItems'))
     : [];
 
+const userInfoFromStorage = localStorage.getItem('userInfo')
+    ? JSON.parse(localStorage.getItem('userInfo'))
+    : null;
+
 const initialState = {
-    cart: {cartItems: cartItemsFromStorage}
+    cart: {cartItems: cartItemsFromStorage},
+    userLogin: {userInfo: userInfoFromStorage}
 }; // Initialize the state with cart items from localStorage
 
 /**
