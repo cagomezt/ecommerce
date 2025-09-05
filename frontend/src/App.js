@@ -7,6 +7,7 @@ import Header from './components/Header'
 import HomeScreen from './screens/HomeScreen'
 import ProductScreen from './screens/ProductScreen'
 import CartScreen from './screens/CartScreen'
+import LoginScreen from './screens/LoginScreen'
 
 /**
  * App component serves as the root component of the application.
@@ -25,6 +26,8 @@ function App() {
                     <Routes>
                         {/* Route for the home screen */}
                         <Route path='/' element={<HomeScreen/>}/>
+                        {/* Route for the login screen */}
+                        <Route path='/login' element={<LoginScreen/>}/>
                         {/* Route for the product details screen */}
                         <Route path='/product/:id' element={<ProductScreen/>}/>
                         {/* Route for the cart screen, with an optional product ID parameter */}

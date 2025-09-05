@@ -5,14 +5,12 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {Provider} from 'react-redux'; // Provides the Redux store to the React application
+import { Provider } from 'react-redux'; // Provides the Redux store to the React application
 import store from './store'; // The configured Redux store
 import './index.css'; // Global CSS styles
 import './bootstrap.min.css'; // Bootstrap CSS for styling
 import App from './App'; // The root React component
-import reportWebVitals from './reportWebVitals';
-import {DevSupport} from "@react-buddy/ide-toolbox";
-import {ComponentPreviews, useInitial} from "./dev"; // Utility for measuring app performance
+import reportWebVitals from './reportWebVitals'; // Utility for measuring app performance
 
 // Create a root DOM node for rendering the React application
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -23,11 +21,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
  */
 root.render(
     <Provider store={store}>
-        <DevSupport ComponentPreviews={ComponentPreviews}
-                    useInitialHook={useInitial}
-        >
-            <App/>
-        </DevSupport>
+        <App />
     </Provider>
 );
 
