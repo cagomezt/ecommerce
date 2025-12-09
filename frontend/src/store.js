@@ -15,7 +15,7 @@ import {
 } from '@reduxjs/toolkit'
 import {productListReducer, productDetailsReducer} from './reducers/productReducers' // Import your product slice reducers here
 import {cartReducer} from './reducers/cartReducers'
-import {userLoginReducer} from './reducers/userReducers'
+import {userLoginReducer, userRegisterReducer} from './reducers/userReducers'
 
 
 const rootReducer = combineReducers({
@@ -23,6 +23,7 @@ const rootReducer = combineReducers({
     productDetails: productDetailsReducer, // Add your slice reducers to the combined reducer
     cart: cartReducer, // Add the cart reducer to manage cart state
     userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
 });
 
 const cartItemsFromStorage = localStorage.getItem('cartItems')
